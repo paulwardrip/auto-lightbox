@@ -1,13 +1,10 @@
+
 var AutoLightBox = function(elem) {
+
     var box = document.createElement("div");
-    //var $window = $(window);
-    //var $body = $("body");
     var attached = false;
-    //var $parent;
     var parent;
     var visible = false;
-    
-
     var control;
 
     function incrementControl() {
@@ -32,9 +29,9 @@ var AutoLightBox = function(elem) {
 
     var hide = function () {
         if ($) {
-        	$(box).fadeTo(200, 0);
+            $(box).fadeTo(200, 0);
         } else {
-        	box.style.opacity = 0;
+            box.style.opacity = 0;
         }
         visible = false;
     };
@@ -42,15 +39,19 @@ var AutoLightBox = function(elem) {
     function adjustSize() {
         box.style.height = 1;
         box.style.width = 1;
- 
+
         if (visible) {
-            box.style.height: window.innerHeight + "px",
-            box.style.width: window.innerWidth + "px"
+            box.style.height = window.innerHeight + "px";
+            box.style.width = window.innerWidth + "px";
         }
     }
 
-    function parent(elem) {
+    function assignparent(elem) {
         if (elem) {
+            if (elem instanceof jQuery) {
+                elem = elem.get(0);
+            }
+
             incrementControl();
 
             if (parent) {
@@ -60,10 +61,20 @@ var AutoLightBox = function(elem) {
 
             parent = elem;
 
-            parent.classList.add("lightbox-auto-control-" + control);
-            box.classList.add("lightbox-" + control);
+            if (parent.classList) {
+                parent.classList.add("lightbox-auto-control-" + control);
+            } else {
+                parent.class = "lightbox-auto-control-" + control;
+            }
 
-            var z = elem.style.zIndex;
+            if (box.classList) {
+                box.classList.add("lightbox-" + control);
+            } else {
+                box.class = "lightbox-" + control;
+            }
+
+            var style = window.getComputedStyle(elem);
+            var z = style.zIndex;
             if (!z) {
                 z = 50;
                 elem.style.zIndex = z;
@@ -91,7 +102,7 @@ var AutoLightBox = function(elem) {
     box.style.left = 0;
     box.style.top = 0;
 
-    parent(elem);
+    assignparent(elem);
     adjustSize();
 
     attach();
@@ -99,8 +110,10 @@ var AutoLightBox = function(elem) {
     window.setInterval(function () {
         if (automatic) {
             var ac = document.querySelector(".lightbox-auto-control-" + control);
-            if (ac && ac.length > 0) {
-                var style = window.getComputedStyle(ac[0]);
+
+            if (ac) {
+                var style = window.getComputedStyle(ac);
+                console.debug(style.display, style.visibility, style.opacity);
                 if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === 0){
                     if (visible) hide();
                 } else {
@@ -121,7 +134,7 @@ var AutoLightBox = function(elem) {
         hide: hide,
         attach: attach,
         detach: detach,
-        parent: parent,
+        parent: assignparent,
         color: function (c) {
             box.style.backgroundColor = c;
         },
