@@ -37,8 +37,8 @@ var AutoLightBox = function(elem) {
     };
 
     function adjustSize() {
-        box.style.height = 1;
-        box.style.width = 1;
+        box.style.height = "1px";
+        box.style.width = "1px";
 
         if (visible) {
             box.style.height = window.innerHeight + "px";
