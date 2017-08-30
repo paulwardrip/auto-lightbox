@@ -119,7 +119,6 @@ var AutoLightBox = function(elem) {
 
             if (ac) {
                 var style = window.getComputedStyle(ac);
-                console.debug(style.display, style.visibility, style.opacity);
                 if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === 0){
                     if (visible) hide();
                 } else {
