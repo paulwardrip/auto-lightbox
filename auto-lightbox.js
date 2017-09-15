@@ -24,8 +24,9 @@ var AutoLightBox = function(elem) {
         } else {
             box.style.opacity = .5;
         }
-        if (parent.style.zIndex) {
-            box.style.zIndex = parent.style.zIndex - 1;
+        var style = window.getComputedStyle(parent);
+        if (style.zIndex) {
+            box.style.zIndex = style.zIndex - 1;
         } else {
             parent.style.zIndex = 100;
             box.style.zIndex = 99;
