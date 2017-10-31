@@ -1,5 +1,10 @@
+var __albinstance;
 
 var AutoLightBox = function(elem) {
+    if (__albinstance !== undefined) {
+        __albinstance.parent(elem);
+        return __albinstance
+    }
 
     var box = document.createElement("div");
     var attached = false;
@@ -8,7 +13,7 @@ var AutoLightBox = function(elem) {
     var control;
 
     function incrementControl() {
-        control = function() {
+        control = function () {
             if (typeof window.LightboxAutoControl === 'undefined') {
                 window.LightboxAutoControl = 1;
             } else {
@@ -19,7 +24,7 @@ var AutoLightBox = function(elem) {
     }
 
     var show = function () {
-        if ($) {
+        if (typeof $ !== 'undefined') {
             $(box).fadeTo(200, .5);
         } else {
             box.style.opacity = .5;
@@ -35,7 +40,7 @@ var AutoLightBox = function(elem) {
     };
 
     var hide = function () {
-        if ($) {
+        if (typeof $ !== 'undefined') {
             $(box).fadeTo(200, 0);
         } else {
             box.style.opacity = 0;
@@ -61,9 +66,14 @@ var AutoLightBox = function(elem) {
 
             incrementControl();
 
+            var zi;
+
             if (parent) {
                 parent.classList.remove("lightbox-auto-control-" + (control - 1));
                 box.classList.remove("lightbox-" + (control - 1));
+                var comps = window.getComputedStyle(parent);
+
+                zi = comps.zIndex;
             }
 
             parent = elem;
@@ -81,9 +91,15 @@ var AutoLightBox = function(elem) {
             }
 
             var style = window.getComputedStyle(elem);
+
             var z = style.zIndex;
-            if (!z) {
-                z = 50;
+            if (!z || z === "auto") {
+                if (zi) {
+                    z = zi + 2;
+                } else {
+                    z = 50;
+                }
+
                 elem.style.zIndex = z;
             }
 
@@ -120,7 +136,7 @@ var AutoLightBox = function(elem) {
 
             if (ac) {
                 var style = window.getComputedStyle(ac);
-                if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === 0){
+                if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === 0) {
                     if (visible) hide();
                 } else {
                     if (!visible) show();
@@ -131,11 +147,11 @@ var AutoLightBox = function(elem) {
         if (attached) {
             adjustSize();
         }
-    },100);
+    }, 100);
 
     var automatic = true;
 
-    return {
+    var __api = {
         show: show,
         hide: hide,
         attach: attach,
@@ -145,5 +161,18 @@ var AutoLightBox = function(elem) {
             box.style.backgroundColor = c;
         },
         automatic: automatic
-    }
+    };
+
+    __albinstance = __api;
+
+    return __api;
 };
+
+window.setTimeout(function () {
+    if (typeof $ !== 'undefined') {
+        $.fn.autolightbox = function () {
+            AutoLightBox(this);
+        };
+        console.log ("Registered jQuery plugin for autolightbox.");
+    }
+},0);
