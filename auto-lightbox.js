@@ -62,6 +62,8 @@ var AutoLightBox = function(elem) {
         if (elem) {
             if (elem instanceof jQuery) {
                 elem = elem.get(0);
+            } else if (typeof elem === 'string') {
+                elem = document.querySelector(elem);
             }
 
             incrementControl();
