@@ -5,7 +5,7 @@
   "authors": [
     "Paul Wardrip <pwardrip@gmail.com>"
   ],
-  "description": "a lightbox that automatically shows and hides when the parent modal does, handles it's own z-index and dimensions automatically, it can also switch parents.",
+  "description": "an automatic lightbox that checks an element's visibility and modal creation.",
   "moduleType": [],
   "keywords": [
     "lightbox",
@@ -14,10 +14,10 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "_config.yml",
     "node_modules",
     "bower_components",
-    "test",
-    "tests",
+    "scripts",
     "index.html"
   ],
   "dependencies": {

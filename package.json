@@ -5,9 +5,13 @@
   "private": false,
   "repository": "https://github.com/paulwardrip/auto-lightbox.git",
   "license": "MIT",
+  "scripts": {
+    "babel": "babel -o dist/auto-lightbox.js scripts/lightbox.js scripts/modal.js scripts/jsonstyle.js",
+    "min": "uglifyjs -o dist/auto-lightbox.min.js dist/auto-lightbox.js"
+  },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-contrib-uglify": "^3.0.1"
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "uglify-js": "^3.3.26"
   }
 }
