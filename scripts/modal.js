@@ -10,25 +10,15 @@ let AutoModal = function(){
 
     let lightbox;
 
-    JsonStyle(
-        { ".auto-modal": {
+    JsonStyle({
+        ".auto-modal": {
             "position": "absolute",
-            "padding": "10px",
             "border-radius": "10px",
-            "border": "1px solid #efefef",
-            "background": "white"
-        }},
-
-        {
-            ".auto-modal .header": {
-                "border-bottom": "1px solid #efefef"
-            },
-            ".auto-modal .footer": {
-                "border-bottom": "1px solid #efefef"
-            }
+            "border": "2px solid #efefef",
+            "background": "white",
+            "padding": "5px"
         }
-
-        ).append();
+    }).append();
 
 
     function api(template) {
@@ -105,10 +95,14 @@ let AutoModal = function(){
                     } else {
                         body.removeChild(container);
                     }
-                    if (typeof callback === 'function') {
-                        if (parent) {
 
-                        }
+                    if (parent) {
+                        top = parent;
+                        parent = null;
+                        lightbox.parent(top);
+                    }
+
+                    if (typeof callback === 'function') {
                         callback();
                     }
                 }
@@ -133,61 +127,39 @@ let AutoModal = function(){
     }
 
     function init() {
-        // if (!initkicked) {
-        //     initkicked = true;
+        let scripts = document.getElementsByTagName("script");
+        let todo = scripts.length;
+        let temps = [];
 
-
-            let scripts = document.getElementsByTagName("script");
-            let todo = scripts.length;
-            let temps = [];
-
-            for (let idx = 0; idx < todo; idx++) {
-                let elem = scripts[idx];
-                if (elem.getAttribute("type") === "text/html") {
-                    if (elem.classList.contains("auto-modal")) {
-                        let id;
-                        if (id = elem.getAttribute("id")) {
-                            console.info("AutoModal template found:", id);
-                            temps.push(elem);
-                        }
+        for (let idx = 0; idx < todo; idx++) {
+            let elem = scripts[idx];
+            if (elem.getAttribute("type") === "text/html") {
+                if (elem.classList.contains("auto-modal")) {
+                    let id;
+                    if (id = elem.getAttribute("id")) {
+                        console.info("AutoModal template found:", id);
+                        temps.push(elem);
                     }
                 }
             }
+        }
 
-            for (let eidx = 0; eidx < temps.length; eidx++) {
-                modals[temps[eidx].getAttribute("id")] = api(temps[eidx]);
-                m++;
-            }
+        for (let eidx = 0; eidx < temps.length; eidx++) {
+            modals[temps[eidx].getAttribute("id")] = api(temps[eidx]);
+            m++;
+        }
 
-            console.debug("AutoModal init complete:", m, "modals loaded.");
+        console.debug("AutoModal init complete:", m, "modals loaded.");
 
-            if (autoappend && m > 0) {
-                setTimeout(detachAll, 250);
-            }
-        // }
+        if (autoappend && m > 0) {
+            setTimeout(detachAll, 250);
+        }
     }
 
-
-    // if (typeof $ === 'undefined') {
-    //     console.debug("AutoModal was loaded before jQuery, triggering async load to wait for jQuery to be defined.");
-    //     setTimeout(function () {
-    //         $(init);
-    //     }, 0);
-    // } else {
-    //     $(init);
-    // }
-    //
-    // return function (id) {
-    //     if (!initkicked) {
-    //         init();
-    //     }
-    //     return modals[id];
-    // }
-
     setTimeout(()=>{
-       isjq = (typeof $ !== "undefined");
-       body = document.getElementsByTagName("body")[0];
-       init();
+        isjq = (typeof $ !== "undefined");
+        body = document.getElementsByTagName("body")[0];
+        init();
     },0);
 
     return (id)=>{

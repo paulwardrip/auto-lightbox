@@ -7,17 +7,20 @@ let JsonStyle = function (o) {
 
     function append() {
         let sheet = document.createElement("style");
-        sheet.setAttribute("type", "text/css");
-        sheet.innerText = css();
+        sheet.type = "text/css";
+        let styles = css();
+        sheet.appendChild(document.createTextNode(styles));
         head.appendChild(sheet);
     }
 
     function css() {
+        let csstr = "";
         for (let idx in obj) {
             if (obj.hasOwnProperty(idx)) {
-                return idx + " " + JSON.stringify(obj[idx], null, 2).replace(/"/g,'').replace(/,/g, ';');
+                csstr += idx + " " + JSON.stringify(obj[idx], null, 2).replace(/"/g,'').replace(/,/g, ';') + "\n";
             }
         }
+        return csstr;
     }
 
     return {
