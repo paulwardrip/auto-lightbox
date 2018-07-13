@@ -17,11 +17,19 @@ let AutoModal = function(){
             "border": "2px solid #efefef",
             "background": "white",
             "padding": "5px"
+        },
+        ".auto-modal .closer": {
+            "position": "absolute",
+            "top": "5px",
+            "right": "5px",
+            "cursor": "pointer"
         }
     }).append();
 
 
     function api(template) {
+        let __mo;
+
         let container = document.createElement("div");
         container.setAttribute("id", template.getAttribute("id"));
 
@@ -32,6 +40,14 @@ let AutoModal = function(){
 
         container.innerHTML = template.innerHTML;
 
+        let closer = document.createElement("img");
+        closer.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAi0lEQVQYlY2QsRHCQAwE9xkaoAWHp5AWXINLgBKgBLsFSnALUAKEr5AWXMKT6J14PI+Sk0YrBZuye+GPOkamBlcOtTOpN6mYdI75bdKz7lcwu7+ABzCbdAM6YNiAUffIERiy+7IHApyAJT6yB87AB5iA0aRuA5p0AXrgmt0n4BuHAKTw2NRTPTal/wAsYySwFJ9hZgAAAABJRU5ErkJggg==";
+        closer.classList.add("closer");
+        closer.onclick = ()=>{
+            __mo.hide(onclo);
+        };
+        container.appendChild(closer);
+
         container.style.display = "none";
         container.style.opacity = "0";
 
@@ -39,10 +55,15 @@ let AutoModal = function(){
         body.appendChild(container);
 
         let parent;
+        let onclo;
 
-        return {
+        return __mo = {
             elem: ()=> {
                 return container;
+            },
+
+            onclose: (callback)=> {
+                onclo = callback;
             },
 
             show: function (callback) {
@@ -113,7 +134,7 @@ let AutoModal = function(){
                     container.style.opacity = "0";
                 }
             }
-        }
+        };
     }
 
     function detachAll() {
