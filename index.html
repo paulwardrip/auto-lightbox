@@ -14,36 +14,21 @@
 </head>
 <body>
     <h1>Autolightbox Demo</h1>
-    <button id="box1show">Show Box 1</button>
+    <button auto-modal="box1">Box 1</button>
 
 <script type="text/html" class="auto-modal" id="box1">
     <header>Box 1</header>
     <main>
-        <button id="box1hide">Hide</button>
-        <button id="box2show">Show Box 2</button>
+        <div>This box gets an automatic lightbox when it opens.</div>
+        <button auto-modal="box2">Box 2</button>
     </main>
 </script>
 
 <script type="text/html" class="auto-modal" id="box2">
-    <header>Box 2</header>
-    <button id="box2hide">Hide</button>
+    <h1>Box 2</h1>
+    <div>This is another example box, the lightbox ownership transfers here.</div>
+    <div>When closed, the lightbox returns to the parent... Box 1.</div>
 </script>
 
-<script>
-    $(function(){
-        $("#box1show").click(function() {
-            AutoModal("box1").show();
-        });
-        $("#box1hide").click(function () {
-            AutoModal("box1").hide();
-        });
-        $("#box2show").click(function() {
-            AutoModal("box2").show();
-        });
-        $("#box2hide").click(function() {
-            AutoModal("box2").hide();
-        });
-    });
-</script>
 </body>
 </html>

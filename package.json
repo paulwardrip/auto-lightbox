@@ -1,17 +1,20 @@
 {
   "name": "auto-lightbox",
-  "version": "2.0.1",
+  "version": "2.0.0-beta-1",
   "main": "auto-lightbox.js",
   "private": false,
   "repository": "https://github.com/paulwardrip/auto-lightbox.git",
   "license": "MIT",
   "scripts": {
+    "serve": "node express.js",
     "babel": "babel -o dist/auto-lightbox.js scripts/lightbox.js scripts/modal.js scripts/jsonstyle.js",
     "min": "uglifyjs -o dist/auto-lightbox.min.js dist/auto-lightbox.js"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "express": "^4.16.3",
+    "express-static": "^1.2.5",
     "uglify-js": "^3.3.26"
   }
 }

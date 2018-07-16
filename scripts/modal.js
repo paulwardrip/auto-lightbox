@@ -56,14 +56,25 @@ let AutoModal = function(){
 
         let parent;
         let onclo;
+        let onopo;
 
         return __mo = {
             elem: ()=> {
                 return container;
             },
 
+            onopen: (callback)=> {
+                if (callback) {
+                    onopo = callback;
+                }
+                return onopo;
+            },
+
             onclose: (callback)=> {
-                onclo = callback;
+                if (callback) {
+                    onclo = callback;
+                }
+                return onclo;
             },
 
             show: function (callback) {
@@ -95,17 +106,22 @@ let AutoModal = function(){
                     container.style.left = l + "px";
                 },0);
 
-                if (isjq) {
-                    $(container).animate({opacity: 1}, 250, "swing", function () {
-                        if (typeof callback === 'function') {
-                            callback();
-                        }
-                    });
-                } else {
-                    container.style.opacity = "1";
+                let opened = ()=> {
                     if (typeof callback === 'function') {
                         callback();
                     }
+                    if (typeof onopo === 'function') {
+                        onopo();
+                    }
+                };
+
+                if (isjq) {
+                    $(container).animate({opacity: 1}, 250, "swing", function () {
+                        opened();
+                    });
+                } else {
+                    container.style.opacity = "1";
+                    opened();
                 }
             },
 
@@ -125,6 +141,9 @@ let AutoModal = function(){
 
                     if (typeof callback === 'function') {
                         callback();
+                    }
+                    if (typeof onclo === 'function') {
+                        onclo();
                     }
                 }
 
@@ -171,6 +190,17 @@ let AutoModal = function(){
         }
 
         console.debug("AutoModal init complete:", m, "modals loaded.");
+
+        let automs = document.querySelectorAll("[auto-modal]");
+        for (let idx = 0; idx < automs.length; idx++) {
+            console.debug(automs[idx]);
+            if (automs[idx]) {
+                let trigger = automs[idx].getAttribute("auto-modal");
+                automs[idx].onclick = () => {
+                    AutoModal(trigger).show();
+                };
+            }
+        }
 
         if (autoappend && m > 0) {
             setTimeout(detachAll, 250);
