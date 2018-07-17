@@ -186,6 +186,58 @@ var AutoLightBox = function () {
 }();
 "use strict";
 
+var JsonStyle = function JsonStyle(o) {
+
+    var obj = o;
+
+    var head = document.getElementsByTagName("head")[0];
+
+    function append() {
+        var sheet = document.createElement("style");
+        sheet.type = "text/css";
+        var styles = css();
+        sheet.appendChild(document.createTextNode(styles));
+        head.appendChild(sheet);
+    }
+
+    function css() {
+        var csstr = "";
+        for (var idx in obj) {
+            if (obj.hasOwnProperty(idx)) {
+                csstr += idx + " " + JSON.stringify(obj[idx], null, 2).replace(/"/g, '').replace(/,/g, ';') + "\n";
+            }
+        }
+        return csstr;
+    }
+
+    return {
+        css: css,
+        append: append
+    };
+};
+"use strict";
+
+var ElementObserver = function ElementObserver(cb) {
+    // Create a mutation observer to automatically hook up any dynamically added form fields.
+    var observer = new MutationObserver(function (mutations) {
+        var nodes = [];
+        for (var midx in mutations) {
+            nodes = nodes.concat(mutations[midx].addedNodes);
+        }
+        cb(nodes);
+    });
+
+    var toObserve = {
+        attributes: false,
+        characterData: false,
+        childList: true,
+        subtree: true
+    };
+
+    observer.observe(document, toObserve);
+};
+"use strict";
+
 var AutoModal = function () {
     var body = void 0;
     var modals = {};
@@ -198,6 +250,8 @@ var AutoModal = function () {
 
     var lightbox = void 0;
 
+    var first = true;
+
     JsonStyle({
         ".auto-modal": {
             "position": "absolute",
@@ -205,10 +259,18 @@ var AutoModal = function () {
             "border": "2px solid #efefef",
             "background": "white",
             "padding": "5px"
+        },
+        ".auto-modal .closer": {
+            "position": "absolute",
+            "top": "5px",
+            "right": "5px",
+            "cursor": "pointer"
         }
     }).append();
 
     function api(template) {
+        var __mo = void 0;
+
         var container = document.createElement("div");
         container.setAttribute("id", template.getAttribute("id"));
 
@@ -219,6 +281,14 @@ var AutoModal = function () {
 
         container.innerHTML = template.innerHTML;
 
+        var closer = document.createElement("img");
+        closer.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAi0lEQVQYlY2QsRHCQAwE9xkaoAWHp5AWXINLgBKgBLsFSnALUAKEr5AWXMKT6J14PI+Sk0YrBZuye+GPOkamBlcOtTOpN6mYdI75bdKz7lcwu7+ABzCbdAM6YNiAUffIERiy+7IHApyAJT6yB87AB5iA0aRuA5p0AXrgmt0n4BuHAKTw2NRTPTal/wAsYySwFJ9hZgAAAABJRU5ErkJggg==";
+        closer.classList.add("closer");
+        closer.onclick = function () {
+            __mo.hide(onclo);
+        };
+        container.appendChild(closer);
+
         container.style.display = "none";
         container.style.opacity = "0";
 
@@ -226,10 +296,26 @@ var AutoModal = function () {
         body.appendChild(container);
 
         var parent = void 0;
+        var onclo = void 0;
+        var onopo = void 0;
 
-        return {
+        return __mo = {
             elem: function elem() {
                 return container;
+            },
+
+            onopen: function onopen(callback) {
+                if (callback) {
+                    onopo = callback;
+                }
+                return onopo;
+            },
+
+            onclose: function onclose(callback) {
+                if (callback) {
+                    onclo = callback;
+                }
+                return onclo;
             },
 
             show: function show(callback) {
@@ -261,17 +347,22 @@ var AutoModal = function () {
                     container.style.left = l + "px";
                 }, 0);
 
-                if (isjq) {
-                    $(container).animate({ opacity: 1 }, 250, "swing", function () {
-                        if (typeof callback === 'function') {
-                            callback();
-                        }
-                    });
-                } else {
-                    container.style.opacity = "1";
+                var opened = function opened() {
                     if (typeof callback === 'function') {
                         callback();
                     }
+                    if (typeof onopo === 'function') {
+                        onopo();
+                    }
+                };
+
+                if (isjq) {
+                    $(container).animate({ opacity: 1 }, 250, "swing", function () {
+                        opened();
+                    });
+                } else {
+                    container.style.opacity = "1";
+                    opened();
                 }
             },
 
@@ -291,6 +382,9 @@ var AutoModal = function () {
 
                     if (typeof callback === 'function') {
                         callback();
+                    }
+                    if (typeof onclo === 'function') {
+                        onclo();
                     }
                 }
 
@@ -336,11 +430,30 @@ var AutoModal = function () {
             m++;
         }
 
-        console.debug("AutoModal init complete:", m, "modals loaded.");
+        if (first) {
+            console.debug("AutoModal init complete:", m, "modals loaded.");
+        } else {
+            console.debug("AutoModal detected new scripts:", m, "modals loaded.");
+        }
+
+        var automs = document.querySelectorAll("[auto-modal]");
+        for (var _idx = 0; _idx < automs.length; _idx++) {
+            console.debug(automs[_idx]);
+            if (automs[_idx]) {
+                (function () {
+                    var trigger = automs[_idx].getAttribute("auto-modal");
+                    automs[_idx].onclick = function () {
+                        AutoModal(trigger).show();
+                    };
+                })();
+            }
+        }
 
         if (autoappend && m > 0) {
             setTimeout(detachAll, 250);
         }
+
+        first = false;
     }
 
     setTimeout(function () {
@@ -349,38 +462,16 @@ var AutoModal = function () {
         init();
     }, 0);
 
+    ElementObserver(function (nodes) {
+        for (var idx in nodes) {
+            if (nodes.nodeType === Node.ELEMENT_NODE && node.tagName === "script" && node.classList.contains("auto-modal")) {
+                init();
+                break;
+            }
+        }
+    });
+
     return function (id) {
         return modals[id];
     };
 }();
-"use strict";
-
-var JsonStyle = function JsonStyle(o) {
-
-    var obj = o;
-
-    var head = document.getElementsByTagName("head")[0];
-
-    function append() {
-        var sheet = document.createElement("style");
-        sheet.type = "text/css";
-        var styles = css();
-        sheet.appendChild(document.createTextNode(styles));
-        head.appendChild(sheet);
-    }
-
-    function css() {
-        var csstr = "";
-        for (var idx in obj) {
-            if (obj.hasOwnProperty(idx)) {
-                csstr += idx + " " + JSON.stringify(obj[idx], null, 2).replace(/"/g, '').replace(/,/g, ';') + "\n";
-            }
-        }
-        return csstr;
-    }
-
-    return {
-        css: css,
-        append: append
-    };
-};

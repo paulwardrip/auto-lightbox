@@ -1,4 +1,6 @@
 # auto-lightbox
+In auto-lightbox 2.0.0 modals with automatic wiring were introduced.  
+
 An automatic lightbox that will show and hide when its parent element does, Now has a jQuery plugin (but does not require jQuery, can be used standalone).
 It will try to guess at proper z-indexes for itself and multiple parent elements, but if it gets out of whack set explicit z-indexes on all your parent elements that it will be attached to.
 
@@ -18,10 +20,10 @@ Just make sure to pass ownership back to mymodal when childofmymodal is closed.
 
 # The standalone way:
 
-```
-\\ you can pass in a dom element:
+```javascript
+// you can pass in a dom element:
 var lightbox = Autolightbox(myelement);
 
-\\ give control to another element, you can also use a query selector:
+// give control to another element, you can also use a query selector:
 lightbox.parent(".somethingelse");
 ```

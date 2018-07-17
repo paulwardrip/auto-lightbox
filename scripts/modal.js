@@ -10,6 +10,8 @@ let AutoModal = function(){
 
     let lightbox;
 
+    let first = true;
+
     JsonStyle({
         ".auto-modal": {
             "position": "absolute",
@@ -189,7 +191,11 @@ let AutoModal = function(){
             m++;
         }
 
-        console.debug("AutoModal init complete:", m, "modals loaded.");
+        if (first) {
+            console.debug("AutoModal init complete:", m, "modals loaded.");
+        } else {
+            console.debug("AutoModal detected new scripts:", m, "modals loaded.");
+        }
 
         let automs = document.querySelectorAll("[auto-modal]");
         for (let idx = 0; idx < automs.length; idx++) {
@@ -205,6 +211,8 @@ let AutoModal = function(){
         if (autoappend && m > 0) {
             setTimeout(detachAll, 250);
         }
+
+        first = false;
     }
 
     setTimeout(()=>{
@@ -212,6 +220,15 @@ let AutoModal = function(){
         body = document.getElementsByTagName("body")[0];
         init();
     },0);
+
+    ElementObserver((nodes)=>{
+        for (let idx in nodes) {
+            if (nodes.nodeType === Node.ELEMENT_NODE && node.tagName === "script" && node.classList.contains("auto-modal")) {
+                init();
+                break;
+            }
+        }
+    });
 
     return (id)=>{
         return modals[id];
