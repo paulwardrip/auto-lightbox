@@ -53,7 +53,7 @@ let AutoModal = function(){
         container.style.display = "none";
         container.style.opacity = "0";
 
-        body.removeChild(template);
+        template.parentElement.removeChild(template);
         body.appendChild(container);
 
         let parent;
