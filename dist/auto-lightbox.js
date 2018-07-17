@@ -217,18 +217,23 @@ var JsonStyle = function JsonStyle(o) {
 };
 "use strict";
 
-var ElementObserver = function ElementObserver(cb) {
-    // Create a mutation observer to automatically hook up any dynamically added form fields.
+var ElementObserver = function ElementObserver(ele, attr) {
     var observer = new MutationObserver(function (mutations) {
         var nodes = [];
         for (var midx in mutations) {
-            nodes = nodes.concat(mutations[midx].addedNodes);
+            if (attr && mutations[midx].type === "attributes") {
+                attr(mutations[midx].attributeName);
+            } else {
+                nodes = nodes.concat(Array.prototype.slice.call(mutations[midx].addedNodes));
+            }
         }
-        cb(nodes);
+        if (ele) {
+            ele(nodes);
+        }
     });
 
     var toObserve = {
-        attributes: false,
+        attributes: true,
         characterData: false,
         childList: true,
         subtree: true
@@ -438,7 +443,6 @@ var AutoModal = function () {
 
         var automs = document.querySelectorAll("[auto-modal]");
         for (var _idx = 0; _idx < automs.length; _idx++) {
-            console.debug(automs[_idx]);
             if (automs[_idx]) {
                 (function () {
                     var trigger = automs[_idx].getAttribute("auto-modal");
@@ -463,13 +467,17 @@ var AutoModal = function () {
 
         ElementObserver(function (nodes) {
             for (var idx in nodes) {
-                if (nodes[idx].nodeType === Node.ELEMENT_NODE && nodes[idx].tagName === "script" && nodes[idx].classList.contains("auto-modal")) {
+                if (nodes[idx].nodeType === Node.ELEMENT_NODE && nodes[idx].tagName === "SCRIPT" && nodes[idx].type === "text/html" && nodes[idx].classList.contains("auto-modal")) {
                     init();
                     break;
                 }
             }
+        }, function (attr) {
+            if (attr === "auto-modal") {
+                init();
+            }
         });
-    }, 0);
+    }, 10);
 
     return function (id) {
         return modals[id];
