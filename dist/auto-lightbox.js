@@ -431,9 +431,9 @@ var AutoModal = function () {
         }
 
         if (first) {
-            console.debug("AutoModal init complete:", m, "modals loaded.");
+            console.info("AutoModal init complete:", m, "modals loaded.");
         } else {
-            console.debug("AutoModal detected new scripts:", m, "modals loaded.");
+            console.info("AutoModal detected new scripts:", m, "modals loaded.");
         }
 
         var automs = document.querySelectorAll("[auto-modal]");
@@ -463,12 +463,7 @@ var AutoModal = function () {
     }, 0);
 
     ElementObserver(function (nodes) {
-        for (var idx in nodes) {
-            if (nodes.nodeType === Node.ELEMENT_NODE && node.tagName === "script" && node.classList.contains("auto-modal")) {
-                init();
-                break;
-            }
-        }
+        init();
     });
 
     return function (id) {
