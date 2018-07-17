@@ -1,19 +1,25 @@
-let ElementObserver = function(cb){
-    // Create a mutation observer to automatically hook up any dynamically added form fields.
+let ElementObserver = function(ele, attr){
     let observer = new MutationObserver(function(mutations) {
         let nodes = [];
         for (let midx in mutations) {
-            nodes = nodes.concat(mutations[midx].addedNodes);
+            if (attr && mutations[midx].type === "attributes") {
+                attr(mutations[midx].attributeName);
+            } else {
+                nodes = nodes.concat(Array.prototype.slice.call(mutations[midx].addedNodes));
+            }
         }
-        cb(nodes);
+        if (ele) {
+            ele(nodes);
+        }
     });
 
     let toObserve = {
-        attributes: false,
+        attributes: true,
         characterData: false,
         childList: true,
         subtree: true
     };
 
     observer.observe(document, toObserve);
+
 };

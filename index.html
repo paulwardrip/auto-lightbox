@@ -3,6 +3,7 @@
 <head>
     <script src="scripts/lightbox.js"></script>
     <script src="scripts/jsonstyle.js"></script>
+    <script src="scripts/observer.js"></script>
     <script src="scripts/modal.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <style>
@@ -28,6 +29,12 @@
     <h1>Box 2</h1>
     <div>This is another example box, the lightbox ownership transfers here.</div>
     <div>When closed, the lightbox returns to the parent... Box 1.</div>
+</script>
+
+<script type="text/javascript">
+    setTimeout(function () {
+        $("head").append('<script type="text/html" class="auto-modal" id="boxx"><h1>Box X</h1><\/script>');
+    },300);
 </script>
 
 </body>

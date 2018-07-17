@@ -199,7 +199,6 @@ let AutoModal = function(){
 
         let automs = document.querySelectorAll("[auto-modal]");
         for (let idx = 0; idx < automs.length; idx++) {
-            console.debug(automs[idx]);
             if (automs[idx]) {
                 let trigger = automs[idx].getAttribute("auto-modal");
                 automs[idx].onclick = () => {
@@ -222,13 +221,18 @@ let AutoModal = function(){
 
         ElementObserver((nodes)=>{
             for (let idx in nodes) {
-                if (nodes[idx].nodeType === Node.ELEMENT_NODE && nodes[idx].tagName === "script" && nodes[idx].classList.contains("auto-modal")) {
+                if (nodes[idx].nodeType === Node.ELEMENT_NODE && nodes[idx].tagName === "SCRIPT"
+                    && nodes[idx].type === "text/html" && nodes[idx].classList.contains("auto-modal")) {
                     init();
                     break;
                 }
             }
+        }, (attr)=>{
+            if (attr === "auto-modal") {
+                init();
+            }
         });
-    },0);
+    },10);
 
     return (id)=>{
         return modals[id];
