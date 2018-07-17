@@ -223,7 +223,7 @@ let AutoModal = function(){
 
     ElementObserver((nodes)=>{
         for (let idx in nodes) {
-            if (nodes.nodeType === Node.ELEMENT_NODE && node.tagName === "script" && node.classList.contains("auto-modal")) {
+            if (nodes[idx].nodeType === Node.ELEMENT_NODE && nodes[idx].tagName === "script" && nodes[idx].classList.contains("auto-modal")) {
                 init();
                 break;
             }
