@@ -219,11 +219,16 @@ let AutoModal = function(){
         isjq = (typeof $ !== "undefined");
         body = document.getElementsByTagName("body")[0];
         init();
-    },0);
 
-    ElementObserver((nodes)=>{
-        init();
-    });
+        ElementObserver((nodes)=>{
+            for (let idx in nodes) {
+                if (nodes[idx].nodeType === Node.ELEMENT_NODE && nodes[idx].tagName === "script" && nodes[idx].classList.contains("auto-modal")) {
+                    init();
+                    break;
+                }
+            }
+        });
+    },0);
 
     return (id)=>{
         return modals[id];
