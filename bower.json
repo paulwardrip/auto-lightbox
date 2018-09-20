@@ -21,5 +21,6 @@
     "index.html"
   ],
   "dependencies": {
+    "jsonstyle": "^1.1.1"
   }
 }

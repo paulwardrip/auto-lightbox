@@ -10,15 +10,15 @@ let AutoModal = function(){
 
     let lightbox;
 
-    JsonStyle({
+    JsonStyle.style({
         ".auto-modal": {
-            "position": "absolute",
-            "border-radius": "10px",
-            "border": "2px solid #efefef",
-            "background": "white",
-            "padding": "5px"
+            "position":         "absolute",
+            "border-radius":    "10px",
+            "border":           "2px solid #efefef",
+            "background":       "white",
+            "padding":          "5px"
         }
-    }).append();
+    });
 
 
     function api(template) {
@@ -162,7 +162,13 @@ let AutoModal = function(){
         init();
     },0);
 
-    return (id)=>{
+    let __api = (id)=>{
         return modals[id];
-    }
+    };
+
+    __api.prototype.load = function(url) {
+
+    };
+
+    return __api;
 }();

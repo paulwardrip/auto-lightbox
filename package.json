@@ -4,14 +4,12 @@
   "main": "auto-lightbox.js",
   "private": false,
   "repository": "https://github.com/paulwardrip/auto-lightbox.git",
-  "license": "MIT",
   "scripts": {
-    "babel": "babel -o dist/auto-lightbox.js scripts/lightbox.js scripts/modal.js scripts/jsonstyle.js",
-    "min": "uglifyjs -o dist/auto-lightbox.min.js dist/auto-lightbox.js"
+    "dist": "babel -o dist/auto-lightbox.min.js scripts/lightbox.js scripts/modal.js bower_components/jsonstyle/dist/jsonstyle.js --presets=env,minify"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "uglify-js": "^3.3.26"
+    "babel-preset-minify": "^0.4.3"
   }
 }
